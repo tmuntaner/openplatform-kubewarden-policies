@@ -67,6 +67,13 @@ jobs:
         with:
           policy-working-dir: "${{ matrix.policy-working-dir }}"
 
+      - name: Extract version
+        id: extract-version
+        shell: bash
+        run: |
+          VERSION="${{ steps.policy-info.outputs.policy-basename }}/${{ steps.policy-info.outputs.policy-version }}"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
       - name: Configure Git author
         run: |
           git config user.name "Kubewarden bot"
@@ -76,11 +83,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git tag -a "v${{ steps.policy-info.outputs.policy-version }}" -m "Release version ${{ steps.policy-info.outputs.policy-version }}"
-          git push origin "v${{ steps.policy-info.outputs.policy-version }}"
+          git tag -a "$VERSION" -m "Release version $VERSION"
+          git push origin "$VERSION"
 
       - name: Trigger release workflow
-        run: gh workflow run release.yml --ref "v${{ steps.policy-info.outputs.policy-version }}"
+        run: gh workflow run release.yml --ref "$VERSION"
         env:
           GH_TOKEN: ${{ github.token }}
 
