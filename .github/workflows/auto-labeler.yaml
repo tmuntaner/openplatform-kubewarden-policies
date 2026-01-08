@@ -13,17 +13,24 @@ permissions:
   contents: read
 
 jobs:
-  auto_labeler:
-    permissions:
-      # write permission is required to create a GitHub release
-      contents: write
-      # write permission is required for autolabeler
-      # otherwise, read permission is required at least
-      pull-requests: write
+  calculate-policy-matrix:
     runs-on: ubuntu-latest
+    outputs:
+      policy_working_dirs: ${{ steps.policy-matrix.outputs.policy_working_dirs }}
     steps:
-      - uses: release-drafter/release-drafter@b1476f6e6eb133afa41ed8589daba6dc69b4d3f5 # v6.1.0
-        with:
-          config-name: "release-drafter.yml"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Policy Matrix'
+        id: policy-matrix
+        uses: ./.github/actions/policy-matrix
+  auto_labeler:
+    uses: .github/workflows/reusable-auto-labeler.yaml
+    needs: calculate-policy-matrix
+    permissions:
+      contents: write
+      pull-requests: write
+    if: ${{ needs.calculate-policy-matrix.outputs.policy_working_dirs != '[]' }}
+    strategy:
+      fail-fast: true
+      matrix:
+        policy-working-dir: ${{ fromJSON(needs.calculate-policy-matrix.outputs.policy_working_dirs) }}
+    with:
+      policy-working-dir: ${{ matrix.policy-working-dir}}
