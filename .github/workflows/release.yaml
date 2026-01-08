@@ -10,35 +10,24 @@ jobs:
   calculate-policy-from-tag:
     runs-on: ubuntu-latest
     outputs:
-      policy-working-dir: ${{ steps.calculate-vars.outputs.policy_working_dir }}
-      policy-version: ${{ steps.calculate-vars.outputs.policy_version }}
-      policy-id: ${{ steps.calculate-vars.outputs.policy_id }}
-      policy-name: ${{ steps.calculate-vars.outputs.policy_name }}
+      policy-working-dir: ${{ steps.calculate-policy.outputs.policy_working_dir }}
+      policy-version: ${{ steps.policy-info.outputs.policy-version }}
+      policy-id: ${{ steps.policy-info.outputs.policy-id }}
+      policy-name: ${{ steps.policy-info.outputs.policy-basename }}
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      - id: calculate-vars
+      - name: Calculate Policy
+        id: calculate-policy
         shell: bash
         run: |
           policy_name=$( echo ${{ github.ref_name }} | sed 's/\(.*\)\/\(.*\)$/\1/' )
           policy_working_dir=$( find policies -type d -name "$policy_name")
-          policy_ociUrl=$(yq -r '.annotations."io.kubewarden.policy.ociUrl"' $policy_working_dir/metadata.yml)
-          policy_id=${policy_ociUrl##*/}
-          policy_language=""
-
-          if [ ! -d "$policy_working_dir" ]; then
-            echo "$policy_working_dir does not exist, policy not found";
-            exit 1;
-          fi
-
-          echo "policy_id=$policy_id"
-          echo "policy_name=$policy_name"
-          echo "policy_working_dir=$policy_working_dir"
-          echo "policy_version=$( echo ${{ github.ref_name }} | sed 's/\(.*\)\/\(.*\)$/\2/' | cut -c2- )"
-
-          echo "policy_id=$policy_id" >> $GITHUB_OUTPUT
-          echo "policy_name=$policy_name" >> $GITHUB_OUTPUT
           echo "policy_working_dir=$policy_working_dir" >> $GITHUB_OUTPUT
-          echo "policy_version=$( echo ${{ github.ref_name }} | sed 's/\(.*\)\/\(.*\)$/\2/' | cut -c2- )" >> $GITHUB_OUTPUT
+      - name: Get policy metadata
+        id: policy-info
+        uses: ./.github/actions/get-policy-metadata
+        with:
+          policy-working-dir: "${{ steps.calculate-policy.outputs.policy_working_dir }}"
 
   ci:
     uses: ./.github/workflows/reusable-ci.yaml
