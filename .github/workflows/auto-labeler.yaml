@@ -22,7 +22,7 @@ jobs:
         id: policy-matrix
         uses: ./.github/actions/policy-matrix
   auto_labeler:
-    uses: .github/workflows/reusable-auto-labeler.yaml
+    uses: ./.github/workflows/reusable-auto-labeler.yaml
     needs: calculate-policy-matrix
     permissions:
       contents: write
