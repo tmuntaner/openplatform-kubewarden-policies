@@ -55,7 +55,6 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
-    # needs: [calculate-policy-from-tag, ci, pre-release-checks]
     needs: [calculate-policy-from-tag, pre-release-checks, ci]
     permissions:
       # Required to create GH releases
@@ -120,7 +119,7 @@ jobs:
         run: |
           set -ex
           echo Pushing :latest policy to OCI container registry
-          IMMUTABLE_REF=$(kwctl push -o json annotated-policy.wasm ghcr.io/${{ github.repository_owner }}/policies/${{ needs.calculate-policy-from-tag.outputs.policy-id }}:latest | jq -r .immutable_ref)
+          IMMUTABLE_REF=$(kwctl push -o json annotated-policy.wasm ghcr.io/${{ github.repository_owner }}/openplatform-kubewarden-policies/${{ needs.calculate-policy-from-tag.outputs.policy-id }}:latest | jq -r .immutable_ref)
 
           echo Keyless signing of policy using cosign
           cosign sign --yes ${IMMUTABLE_REF}
@@ -134,7 +133,7 @@ jobs:
           export OCI_TAG="v${{ needs.calculate-policy-from-tag.outputs.policy-version }}"
 
           echo Pushing tagged policy to OCI container registry
-          IMMUTABLE_REF=$(kwctl push -o json annotated-policy.wasm ghcr.io/${{ github.repository_owner }}/policies/${{ needs.calculate-policy-from-tag.outputs.policy-id }}:${OCI_TAG} | jq -r .immutable_ref)
+          IMMUTABLE_REF=$(kwctl push -o json annotated-policy.wasm ghcr.io/${{ github.repository_owner }}/openplatform-kubewarden-policies/${{ needs.calculate-policy-from-tag.outputs.policy-id }}:${OCI_TAG} | jq -r .immutable_ref)
 
           echo Keyless signing of policy using cosign
           cosign sign --yes ${IMMUTABLE_REF}
