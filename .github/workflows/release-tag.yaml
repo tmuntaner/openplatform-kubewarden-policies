@@ -15,29 +15,32 @@ jobs:
   calculate-policy-matrix:
     runs-on: ubuntu-latest
     outputs:
-      policy_working_dirs: ${{ github.event_name == 'workflow_dispatch' && steps.dispatch-policy.outputs.policy_working_dirs || steps.policy-matrix.outputs.policy_working_dirs }}
+      policy_working_dirs: ${{ steps.calculate-policy-working-dirs.outputs.policy_working_dirs }}
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0 # checkout all history to do git diff
-      - name: 'Dispatch policy'
-        id: dispatch-policy
+      - name: 'Calculate which policies need a CI job'
+        id: calculate-policy-working-dirs
         shell: bash
         run: |
           if [ "${{github.event_name}}" == "workflow_dispatch" ]; then
             dir_bash_array=("${{ inputs.policy-working-dir }}")
           else
-            dir_bash_array=("")
+            git remote -v
+            # list only changes of files in `policies/`:
+            # We compare base and head references to avoid detecting changes merged to close each other.
+            # Otherwise, a job to tag the same policy could be triggered twice.
+            git_files="$(git diff --no-color --find-renames --find-copies --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} -- policies)"
+
+            # build policy_working_dirs:
+            dir_bash_array=($(echo "$git_files" | cut -d/ -f1,2 ))
           fi
+          
           declare -p dir_bash_array
           policy_working_dirs=$(jq --compact-output --null-input '$ARGS.positional | map(select(. != "policies/Cargo.lock" and . != "policies/Cargo.toml" and . != "policies/go.mod" and . != "policies/go.sum")) | unique' --args -- "${dir_bash_array[@]}")
           echo "policy_working_dirs=$policy_working_dirs"
           echo "policy_working_dirs=$policy_working_dirs" >> $GITHUB_OUTPUT
-      - name: 'Policy Matrix'
-        id: policy-matrix
-        uses: ./.github/actions/calculate-policy-matrix
-        with:
-          changes_only: 'true'
   release-tag:
     name: Tag and push, triggering release
     needs: calculate-policy-matrix
