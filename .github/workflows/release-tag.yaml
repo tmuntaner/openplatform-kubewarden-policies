@@ -1,4 +1,7 @@
 on:
+  pull_request:
+    types:
+      - closed
   workflow_dispatch:
     inputs:
       policy-working-dir:
@@ -12,7 +15,7 @@ jobs:
   calculate-policy-matrix:
     runs-on: ubuntu-latest
     outputs:
-      policy_working_dirs: ${{ steps.policy-matrix.outputs.policy_working_dirs }}
+      policy_working_dirs: ${{ github.event_name == 'workflow_dispatch' && inputs.policy-working-dir || steps.calculate-policy-working-dirs.outputs.policy_working_dirs }}
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
