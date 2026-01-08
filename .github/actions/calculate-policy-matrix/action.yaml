@@ -5,7 +5,6 @@ inputs:
     description: 'Only get the changed policies'
     required: false
     default: 'false'
-    type: 'boolean'
 outputs:
   policy_working_dirs:
     description: 'The directories of the changed policies'
