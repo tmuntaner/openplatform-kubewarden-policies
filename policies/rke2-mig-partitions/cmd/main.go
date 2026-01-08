@@ -13,7 +13,7 @@ import (
 func main() {
 	//nolint:mnd // we only accept the request if it has two inputs.
 	if len(os.Args) != 2 {
-		log.Fatalln("Wrong usage, expected either 'validate' or `validate-settings'")
+		log.Fatalln("Wrong usage,  expected either 'validate' or `validate-settings'")
 	}
 
 	ctx := context.Background()
