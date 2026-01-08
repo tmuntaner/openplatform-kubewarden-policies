@@ -76,11 +76,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git tag -a "$VERSION" -m "Release version $VERSION"
-          git push origin "$VERSION"
+          git tag -a "v${{ steps.policy-info.outputs.policy-version }}" -m "Release version ${{ steps.policy-info.outputs.policy-version }}"
+          git push origin "v${{ steps.policy-info.outputs.policy-version }}"
 
       - name: Trigger release workflow
-        run: gh workflow run release.yml --ref "$VERSION"
+        run: gh workflow run release.yml --ref "v${{ steps.policy-info.outputs.policy-version }}"
         env:
           GH_TOKEN: ${{ github.token }}
 
