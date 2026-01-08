@@ -1,6 +1,9 @@
 name: Release drafter auto labeler
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     types: [opened, reopened, synchronize, edited]
 #  pull_request_target:
