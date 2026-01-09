@@ -49,7 +49,6 @@ jobs:
       contains(github.event.pull_request.labels.*.name, 'TRIGGER-RELEASE') ||
       github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    continue-on-error: true
     concurrency:
       group: ${{ github.workflow }}-${{ matrix.policy-working-dir }}
     strategy:
@@ -87,13 +86,6 @@ jobs:
           git push origin "$VERSION"
 
       - name: Trigger release workflow
-        run: gh workflow run release.yml --ref "$VERSION"
+        run: gh workflow run release.yaml --ref "$VERSION"
         env:
           GH_TOKEN: ${{ github.token }}
-
-      - name: Delete branch corresponding to the PR
-        if: github.event.pull_request.head.ref != 'main'
-        run: |
-          git push origin --delete ${{ github.event.pull_request.head.ref }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
