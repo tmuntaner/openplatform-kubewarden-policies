@@ -36,7 +36,7 @@ jobs:
             # build policy_working_dirs:
             dir_bash_array=($(echo "$git_files" | cut -d/ -f1,2 ))
           fi
-          
+
           declare -p dir_bash_array
           policy_working_dirs=$(jq --compact-output --null-input '$ARGS.positional | map(select(. != "policies/Cargo.lock" and . != "policies/Cargo.toml" and . != "policies/go.mod" and . != "policies/go.sum")) | unique' --args -- "${dir_bash_array[@]}")
           echo "policy_working_dirs=$policy_working_dirs"

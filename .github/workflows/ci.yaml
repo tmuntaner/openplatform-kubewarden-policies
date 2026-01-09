@@ -21,8 +21,6 @@ jobs:
       - name: 'Policy Matrix'
         id: policy-matrix
         uses: ./.github/actions/calculate-policy-matrix
-        with:
-          changes_only: ${{ github.event_name == 'pull_request' && 'true' || 'false' }}
   continuos-integration:
     uses: ./.github/workflows/reusable-ci.yaml
     needs: calculate-policy-matrix
