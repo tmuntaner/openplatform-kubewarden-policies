@@ -3,6 +3,7 @@
 
 
 
+
 This policy guards against Pods attaching MIG Partitions without a ResourceQuota.
 
 **Example policy:**
