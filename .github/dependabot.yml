@@ -7,7 +7,7 @@ version: 2
 updates:
   - package-ecosystem: "cargo"
     directories:
-      - "/profiles/istio-gateway"
+      - "/policies/istio-gateway"
     schedule:
       interval: "weekly"
   - package-ecosystem: github-actions
@@ -16,9 +16,9 @@ updates:
       interval: "weekly"
   - package-ecosystem: gomod
     directories:
-      - "/profiles/harvester-pci-devices"
-      - "/profiles/harvester-restricted-network"
-      - "/profiles/harvester-restricted-network-vm"
-      - "/profiles/rke2-mig-partitions"
+      - "/policies/harvester-pci-devices"
+      - "/policies/harvester-restricted-network"
+      - "/policies/harvester-restricted-network-vm"
+      - "/policies/rke2-mig-partitions"
     schedule:
       interval: "weekly"
