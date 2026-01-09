@@ -70,7 +70,7 @@ jobs:
         id: extract-version
         shell: bash
         run: |
-          VERSION="${{ steps.policy-info.outputs.policy-basename }}/${{ steps.policy-info.outputs.policy-version }}"
+          VERSION="${{ steps.policy-info.outputs.policy-basename }}/v${{ steps.policy-info.outputs.policy-version }}"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Configure Git author
