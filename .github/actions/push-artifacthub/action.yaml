@@ -39,7 +39,7 @@ runs:
         git checkout ${{ github.ref_name }} -- artifacthub-repo.yml
         mkdir -p $POLICY_DIRECTORY
         mv ${{ runner.temp }}/artifacthub-pkg.yml $POLICY_DIRECTORY/artifacthub-pkg.yml
-        git checkout ${{ github.ref_name }} -- $POLICY_DIRECTORY/README.md
+        git show ${{ github.ref_name }}:${{ inputs.policy-working-dir }}/README.md > $POLICY_DIRECTORY/README.md
 
         # Add changes to Git
         git add artifacthub-repo.yml
