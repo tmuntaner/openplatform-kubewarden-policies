@@ -10,15 +10,21 @@ updates:
       - "/policies/istio-gateway"
     schedule:
       interval: "weekly"
+    labels:
+      - "area/dependencies"
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: "weekly"
+    labels:
+      - "area/dependencies"
   - package-ecosystem: gomod
     directories:
       - "/policies/harvester-pci-devices"
       - "/policies/harvester-restricted-network"
       - "/policies/harvester-restricted-network-vm"
-      - "/policies/rke2-mig-partitions"
+      - "/policies/pod-mig-partitions"
     schedule:
       interval: "weekly"
+    labels:
+      - "area/dependencies"
