@@ -32,7 +32,7 @@ runs:
         export POLICY_DIRECTORY="${{ inputs.policy-working-dir }}/${{ inputs.version }}"
 
         # Create or update files
-        git checkout ${{ github.ref_name }} -- artifacthub-repo.yml
+        git show ${{ github.ref_name }}:artifacthub-repo.yml > policies/artifacthub-repo.yml
         mkdir -p $POLICY_DIRECTORY
         mv ${{ runner.temp }}/artifacthub-pkg.yml $POLICY_DIRECTORY/artifacthub-pkg.yml
         git show ${{ github.ref_name }}:${{ inputs.policy-working-dir }}/README.md > $POLICY_DIRECTORY/README.md
