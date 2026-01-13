@@ -38,7 +38,7 @@ runs:
         git show ${{ github.ref_name }}:${{ inputs.policy-working-dir }}/README.md > $POLICY_DIRECTORY/README.md
 
         # Add changes to Git
-        git add artifacthub-repo.yml
+        git add policies/artifacthub-repo.yml
         git add $POLICY_DIRECTORY/artifacthub-pkg.yml
         git add $POLICY_DIRECTORY/README.md
 
